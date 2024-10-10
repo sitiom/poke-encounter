@@ -3,6 +3,8 @@ import { PokemonInfo } from "../types";
 
 interface PokemonCardProps {
   pokemon: PokemonInfo;
+  onClick: (pokemon: PokemonInfo) => void;
+  selected?: boolean;
 }
 
 const typeColors: Record<string, string> = {
@@ -26,7 +28,7 @@ const typeColors: Record<string, string> = {
   fairy: "#D685AD",
 };
 
-function PokemonCard({ pokemon }: PokemonCardProps) {
+function PokemonCard({ pokemon, onClick, selected = false }: PokemonCardProps) {
   const titlecasedName = pokemon.name
     .split("-")
     .map((word) => word[0].toUpperCase() + word.slice(1))
@@ -34,14 +36,25 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
   const pokedexNumber = "#" + pokemon.id.toString().padStart(3, "0");
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder className="w-80">
+    <Card
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder
+      className={
+        selected
+          ? "border-2 border-primary w-80 h-[28rem] justify-center transition-colors"
+          : "w-80 h-[28rem] justify-center transition-colors"
+      }
+      onClick={() => onClick(pokemon)}
+    >
       <Image
         src={pokemon.sprites.front}
         alt="Sprite"
-        className="aspect-square object-contain"
+        className="aspect-square object-contain h-48"
       />
 
-      <Group justify="space-between" mt="md" mb="xs">
+      <div className="mt-9 mb-5">
         <Text fw={500}>
           <span className="font-extrabold">{pokedexNumber}</span>{" "}
           {titlecasedName}
@@ -53,22 +66,12 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
             </Badge>
           ))}
         </div>
-      </Group>
+      </div>
 
       <Text size="sm" c="dimmed" className="mb-2">
         With Fjord Tours you can explore more of the magical fjord landscapes
         with tours and activities on and around the fjords of Norway
       </Text>
-
-      <Button
-        color="blue"
-        fullWidth
-        className="mt-auto"
-        radius="md"
-        onClick={() => alert(pokemon.id)}
-      >
-        Choose Pokemon
-      </Button>
     </Card>
   );
 }

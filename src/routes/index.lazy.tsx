@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import PokemonCard from "../components/PokemonCard";
 import { PokemonInfo } from "../types";
+import { Button } from "@mantine/core";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -11,6 +12,9 @@ export const Route = createLazyFileRoute("/")({
 
 function Index() {
   const [limit] = useState(3);
+  // Selected card
+  const [selected, setSelected] = useState<string | null>(null);
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["random", limit],
     queryFn: async () => {
@@ -48,12 +52,29 @@ function Index() {
   }
 
   return (
-    <>
+    <div className="flex flex-col items-center pb-10">
       <div className="flex justify-center gap-10">
         {data.map((pokemon) => (
-          <PokemonCard key={pokemon.name} pokemon={pokemon} />
+          <PokemonCard
+            key={pokemon.name}
+            pokemon={pokemon}
+            onClick={(selectedPokemon) => {
+              setSelected(selectedPokemon.name);
+            }}
+            selected={selected === pokemon.name}
+          />
         ))}
       </div>
-    </>
+      <Button
+        onClick={() => window.location.reload()}
+        variant="light"
+        size="lg"
+        className="mt-10 mx-auto transition-colors"
+        radius="xl"
+        disabled={!selected}
+      >
+        Go!
+      </Button>
+    </div>
   );
 }
