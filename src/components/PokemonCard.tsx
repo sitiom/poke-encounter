@@ -43,7 +43,8 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
 
       <Group justify="space-between" mt="md" mb="xs">
         <Text fw={500}>
-          {pokedexNumber} {titlecasedName}
+          <span className="font-extrabold">{pokedexNumber}</span>{" "}
+          {titlecasedName}
         </Text>
         <div className="space-x-2">
           {pokemon.types.map((type) => (
