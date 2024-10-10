@@ -1,20 +1,20 @@
-import { Button } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import axios from "axios";
-import { NamedAPIResource } from "pokeapi-js-wrapper";
 import { useState } from "react";
+import PokemonCard from "../components/PokemonCard";
+import { PokemonInfo } from "../types";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
 });
 
 function Index() {
-  const [limit, setLimit] = useState(3);
+  const [limit] = useState(3);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["random", limit],
     queryFn: async () => {
-      const { data } = await axios.get<NamedAPIResource | NamedAPIResource[]>(
+      const { data } = await axios.get<PokemonInfo | PokemonInfo[]>(
         "http://localhost:3000/pokemon/random",
         {
           params: {
@@ -25,35 +25,35 @@ function Index() {
       console.log(data);
       return data;
     },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <img src="/pikachu-loading.gif" alt="loading" className="w-96" />
+        <p className="font-semibold text-3xl">Loading...</p>
+      </div>
+    );
   }
 
   if (isError) {
     return <div>Error!</div>;
   }
 
-  if (data instanceof Array) {
-    return (
-      <ul>
-        {data.map((pokemon) => (
-          <li key={pokemon.name}>{pokemon.name}</li>
-        ))}
-      </ul>
-    );
+  // Return null if data is not an array
+  if (!Array.isArray(data)) {
+    return null;
   }
+
   return (
     <>
-      <Button
-        className="bg-red-950 text-white"
-        onClick={() => {
-          alert("Hello");
-        }}
-      >
-        Hello, World!
-      </Button>
+      <div className="flex justify-center gap-10">
+        {data.map((pokemon) => (
+          <PokemonCard key={pokemon.name} pokemon={pokemon} />
+        ))}
+      </div>
     </>
   );
 }
