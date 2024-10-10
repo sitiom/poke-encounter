@@ -1,10 +1,15 @@
-import { useState } from "react";
-import { Button, TextInput } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import axios from "axios";
 import { NamedAPIResource } from "pokeapi-js-wrapper";
+import { useState } from "react";
 
-function App() {
+export const Route = createLazyFileRoute("/")({
+  component: Index,
+});
+
+function Index() {
   const [limit, setLimit] = useState(3);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["random", limit],
@@ -15,7 +20,7 @@ function App() {
           params: {
             limit,
           },
-        }
+        },
       );
       console.log(data);
       return data;
@@ -52,5 +57,3 @@ function App() {
     </>
   );
 }
-
-export default App;
