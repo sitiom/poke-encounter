@@ -20,6 +20,7 @@ const fetchRandomPokemon = async (): Promise<PokemonInfo> => {
       name: pokemon.species.name,
       url: pokemon.species.url,
     },
+    cry: pokemon.cries.latest,
     types: pokemon.types,
     id: pokemon.id,
     sprites: {

@@ -4,6 +4,7 @@ export interface PokemonInfo {
   name: string;
   id: number;
   types: PokemonType[];
+  cry: string;
   species: {
     name: string;
     url: string;
