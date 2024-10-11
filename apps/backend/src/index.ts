@@ -35,7 +35,7 @@ app.get(
 // Endpoint to fetch a random encounter on sinnoh-route-218
 // https://pokeapi.co/api/v2/location-area/168/
 app.get("/pokemon/random-encounter", async (req, res) => {
-  if (Math.random() < 0.4) {
+  if (Math.random() < 0.43) {
     res.json(await fetchRandomEncounter());
     return;
   }

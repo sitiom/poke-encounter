@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import grassWalking from "../assets/grass-walking.gif";
 import routeImage from "../assets/route-218.jpg";
 import { Card, Group, Badge, Button, Text } from "@mantine/core";
@@ -15,6 +15,7 @@ export const Route = createLazyFileRoute("/search")({
 function Search() {
   const [loading, setLoading] = useState(false);
   const { selectedPokemon } = usePokemonStore();
+  const navigate = useNavigate();
 
   return (
     <Card
@@ -76,6 +77,7 @@ function Search() {
               message: `You found a ${data.name}!`,
               color: "green",
             });
+            navigate({ to: "/battle", replace: true });
           }
           setLoading(false);
         }}

@@ -32,7 +32,7 @@ function Index() {
       </div>
       <Button
         onClick={() => {
-          navigate({ to: "/search" });
+          navigate({ to: "/search", replace: true });
         }}
         variant="light"
         size="lg"
