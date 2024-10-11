@@ -1,5 +1,6 @@
 import { Card, Group, Badge, Button, Image, Text } from "@mantine/core";
 import { PokemonInfo } from "../types";
+import { twMerge } from "tailwind-merge";
 
 interface PokemonCardProps {
   pokemon: PokemonInfo;
@@ -41,11 +42,10 @@ function PokemonCard({ pokemon, onClick, selected = false }: PokemonCardProps) {
       padding="lg"
       radius="md"
       withBorder
-      className={
-        selected
-          ? "border-2 border-primary w-80 h-[28rem] justify-center transition-colors"
-          : "w-80 h-[28rem] justify-center transition-colors"
-      }
+      className={twMerge(
+        "w-80 h-[28rem] justify-center transition-colors",
+        selected && "border-2 border-primary",
+      )}
       onClick={() => onClick(pokemon)}
     >
       <Image
