@@ -1,0 +1,32 @@
+import Pokedex from "pokedex-promise-v2";
+import type { PokemonInfo } from "./types.js";
+
+const P = new Pokedex();
+const pokemonsList = await P.getPokemonsList();
+
+const fetchRandomPokemon = async (): Promise<PokemonInfo> => {
+  let pokemon;
+  do {
+    const randomIndex = Math.floor(Math.random() * pokemonsList.count);
+    pokemon = await P.getPokemonByName(pokemonsList.results[randomIndex].name);
+  } while (
+    pokemon.sprites.other.showdown.front_default === null ||
+    pokemon.sprites.other.showdown.back_default === null
+  );
+
+  return {
+    name: pokemon.name,
+    species: {
+      name: pokemon.species.name,
+      url: pokemon.species.url,
+    },
+    types: pokemon.types,
+    id: pokemon.id,
+    sprites: {
+      front: pokemon.sprites.other.showdown.front_default,
+      back: pokemon.sprites.other.showdown.back_default,
+    },
+  };
+};
+
+export { fetchRandomPokemon };
