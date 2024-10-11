@@ -27,7 +27,42 @@ const fetchRandomPokemon = async (): Promise<PokemonInfo> => {
       front: pokemon.sprites.other.showdown.front_default,
       back: pokemon.sprites.other.showdown.back_default,
     },
+    stats: pokemon.stats,
   };
 };
 
-export { fetchRandomPokemon };
+// Fetch a random encounter on sinnoh-route-218
+const fetchRandomEncounter = async (): Promise<PokemonInfo> => {
+  const locationArea = await P.getLocationAreaByName(168);
+
+  let pokemon;
+  do {
+    const randomIndex = Math.floor(
+      Math.random() * locationArea.pokemon_encounters.length,
+    );
+    pokemon = await P.getPokemonByName(
+      locationArea.pokemon_encounters[randomIndex].pokemon.name,
+    );
+  } while (
+    pokemon.sprites.other.showdown.front_default === null ||
+    pokemon.sprites.other.showdown.back_default === null
+  );
+
+  return {
+    name: pokemon.name,
+    species: {
+      name: pokemon.species.name,
+      url: pokemon.species.url,
+    },
+    cry: pokemon.cries.latest,
+    types: pokemon.types,
+    id: pokemon.id,
+    sprites: {
+      front: pokemon.sprites.other.showdown.front_default,
+      back: pokemon.sprites.other.showdown.back_default,
+    },
+    stats: pokemon.stats,
+  };
+};
+
+export { fetchRandomPokemon, fetchRandomEncounter };

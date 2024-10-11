@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import type { Request } from "express";
-import { fetchRandomPokemon } from "./pokemon.js";
+import { fetchRandomEncounter, fetchRandomPokemon } from "./pokemon.js";
 
 const app = express();
 
@@ -29,8 +29,18 @@ app.get(
     const promises = Array.from({ length: limit }, fetchRandomPokemon);
     const randomPokemons = await Promise.all(promises);
     res.json(randomPokemons);
-  }
+  },
 );
+
+// Endpoint to fetch a random encounter on sinnoh-route-218
+// https://pokeapi.co/api/v2/location-area/168/
+app.get("/pokemon/random-encounter", async (req, res) => {
+  if (Math.random() < 0.4) {
+    res.json(await fetchRandomEncounter());
+    return;
+  }
+  res.json({ message: "No pokemon encountered" });
+});
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

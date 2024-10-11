@@ -13,6 +13,7 @@
     "@formkit/auto-animate": "^0.8.2",
     "@mantine/core": "^7.13.2",
     "@mantine/hooks": "^7.13.2",
+    "@mantine/notifications": "^7.13.2",
     "@tanstack/react-query": "^5.59.8",
     "@tanstack/react-query-devtools": "^5.59.8",
     "@tanstack/react-router": "^1.64.0",
@@ -22,7 +23,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.3",
-    "use-sound": "^4.0.3"
+    "use-sound": "^4.0.3",
+    "zustand": "5.0.0-rc.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

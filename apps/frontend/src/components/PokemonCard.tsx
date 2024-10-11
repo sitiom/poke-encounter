@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import useSound from "use-sound";
 import { useEffect } from "react";
 import { Howl } from "howler";
+import { Table } from "@mantine/core";
 
 interface PokemonCardProps {
   pokemon: PokemonInfo;
@@ -87,10 +88,28 @@ function PokemonCard({ pokemon, onClick, selected = false }: PokemonCardProps) {
         </div>
       </div>
 
-      <Text size="sm" c="dimmed" className="mb-2">
-        With Fjord Tours you can explore more of the magical fjord landscapes
-        with tours and activities on and around the fjords of Norway
-      </Text>
+      <Table horizontalSpacing="md">
+        <Table.Tbody>
+          <Table.Tr>
+            <Table.Th>HP</Table.Th>
+            <Table.Td className="text-right">
+              {pokemon.stats[0].base_stat}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Attack</Table.Th>
+            <Table.Td className="text-right">
+              {pokemon.stats[1].base_stat}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Defense</Table.Th>
+            <Table.Td className="text-right">
+              {pokemon.stats[2].base_stat}
+            </Table.Td>
+          </Table.Tr>
+        </Table.Tbody>
+      </Table>
     </Card>
   );
 }
