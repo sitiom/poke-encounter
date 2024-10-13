@@ -23,6 +23,7 @@ function PokemonInfo({ name, hp, totalHp, className }: PokemonInfoProps) {
       <h1 className="font-semibold mb-1">{titlecasedName}</h1>
       <Progress
         value={(hp / totalHp) * 100}
+        transitionDuration={600}
         color={
           hp / totalHp > 0.5 ? "green" : hp / totalHp > 0.2 ? "yellow" : "red"
         }
