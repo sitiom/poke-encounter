@@ -11,7 +11,8 @@ const fetchRandomPokemon = async (): Promise<PokemonInfo> => {
     pokemon = await P.getPokemonByName(pokemonsList.results[randomIndex].name);
   } while (
     pokemon.sprites.other.showdown.front_default === null ||
-    pokemon.sprites.other.showdown.back_default === null
+    pokemon.sprites.other.showdown.back_default === null ||
+    pokemon.moves.length === 0
   );
 
   return {
