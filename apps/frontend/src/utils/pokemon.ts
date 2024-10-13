@@ -235,7 +235,7 @@ const calculateDamage = (
     (((2 * level) / 5 + 2) * move.power * (attackStat / defenseStat)) / 50 + 2,
   );
 
-  return Math.floor(damage * modifier);
+  return { damage: Math.floor(damage * modifier), typeEffectiveness };
 };
 
 export { extractPokemonData, getTypeEffectiveness, calculateDamage };

@@ -36,11 +36,17 @@ function Battle() {
     // Player's turn
     const playerDamage = calculateDamage(level, player, opponent, selectedMove);
 
-    let newOpponentHP = Math.max(opponentHP - playerDamage, 0);
+    let newOpponentHP = Math.max(opponentHP - playerDamage.damage, 0);
     setOpponentHP(newOpponentHP);
     notifications.show({
       title: `${player.name} used ${selectedMove.name}!`,
-      message: `Dealt ${playerDamage} damage to ${opponent.name}!`,
+      message: `Dealt ${playerDamage.damage} damage to ${opponent.name}! ${
+        playerDamage.typeEffectiveness > 1
+          ? "It's super effective!"
+          : playerDamage.typeEffectiveness < 1
+            ? "It's not very effective..."
+            : ""
+      }`,
     });
 
     if (newOpponentHP <= 0) {
@@ -63,12 +69,18 @@ function Battle() {
       opponentMove,
     );
 
-    let newPlayerHP = Math.max(playerHP - opponentDamage, 0);
+    let newPlayerHP = Math.max(playerHP - opponentDamage.damage, 0);
     setPlayerHP(newPlayerHP);
     notifications.show({
       color: "red",
       title: `${opponent.name} used ${opponentMove.name}!`,
-      message: `Dealt ${opponentDamage} damage to ${player.name}!`,
+      message: `Dealt ${opponentDamage.damage} damage to ${player.name}! ${
+        opponentDamage.typeEffectiveness > 1
+          ? "It's super effective!"
+          : opponentDamage.typeEffectiveness < 1
+            ? "It's not very effective..."
+            : ""
+      }`,
     });
 
     if (newPlayerHP <= 0) {
