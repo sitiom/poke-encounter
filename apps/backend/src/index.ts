@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("Hello World");
 });
 
@@ -34,7 +34,7 @@ app.get(
 
 // Endpoint to fetch a random encounter on sinnoh-route-218
 // https://pokeapi.co/api/v2/location-area/168/
-app.get("/pokemon/random-encounter", async (req, res) => {
+app.get("/pokemon/random-encounter", async (_req, res) => {
   if (Math.random() < 0.43) {
     res.json(await fetchRandomEncounter());
     return;
