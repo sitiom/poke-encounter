@@ -1,9 +1,8 @@
 import { Card, Badge, Image, Text } from "@mantine/core";
 import { PokemonInfo } from "../types";
 import { twMerge } from "tailwind-merge";
-import useSound from "use-sound";
+import { useAudioPlayer } from "react-use-audio-player";
 import { useEffect } from "react";
-import { Howl } from "howler";
 import { Table } from "@mantine/core";
 
 interface PokemonCardProps {
@@ -39,20 +38,19 @@ function PokemonCard({ pokemon, onClick, selected = false }: PokemonCardProps) {
     .map((word) => word[0].toUpperCase() + word.slice(1))
     .join(" ");
   const pokedexNumber = "#" + pokemon.id.toString().padStart(3, "0");
-  const [play, { sound, stop }] = useSound(pokemon.cry, {
-    interrupt: true,
-  });
+
+  const { load, playing, stop } = useAudioPlayer();
 
   useEffect(() => {
     if (selected) {
-      play();
+      load(pokemon.cry, { autoplay: true });
       return;
     }
 
-    if (sound instanceof Howl && sound.playing()) {
+    if (playing) {
       stop();
     }
-  }, [selected, play]);
+  }, [selected]);
 
   return (
     <Card

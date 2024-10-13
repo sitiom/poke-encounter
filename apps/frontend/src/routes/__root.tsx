@@ -13,11 +13,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         <>
           <header className="flex my-8 flex-col items-center">
             <img src={logo} alt="logo" className="w-52" />
-            <div className="font-semibold text-xl">
-              React + Express Battle Simulator
-            </div>
+            <div className="font-semibold text-xl">Battle Simulator</div>
           </header>
-          <div className="container mx-auto px-12" ref={parent}>
+          <div className="container mx-auto px-8" ref={parent}>
             <Outlet />
           </div>
           <TanStackRouterDevtools />

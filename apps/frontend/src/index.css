@@ -1,8 +1,11 @@
-@layer tw_base, mantine, tw_components, tw_utilities;
+@layer tailwind {
+  @tailwind base;
+}
+@tailwind components;
+@tailwind utilities;
 
-@import "tailwindcss/base" layer(tw_base);
-@import "tailwindcss/components" layer(tw_components);
-@import "tailwindcss/utilities" layer(tw_utilities);
-
-@import "@mantine/core/styles.layer.css";
-@import "@mantine/notifications/styles.css";
+/*
+* Thanks to @layer rule, tailwind base get lower "priority"
+* than mantine css rules even if they have same specificity.
+* Thanks to this, we CAN use preflight reset from tailwind.
+*/

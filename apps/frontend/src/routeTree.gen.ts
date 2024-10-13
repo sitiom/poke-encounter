@@ -30,7 +30,7 @@ const SearchLazyRoute = SearchLazyImport.update({
 const BattleRoute = BattleImport.update({
   path: '/battle',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/battle.lazy').then((d) => d.Route))
 
 const IndexRoute = IndexImport.update({
   path: '/',

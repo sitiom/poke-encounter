@@ -1,4 +1,4 @@
-import Pokedex from "pokedex-promise-v2";
+import Pokedex, { type Pokemon } from "pokedex-promise-v2";
 import type { PokemonInfo } from "./types.js";
 
 const P = new Pokedex();
@@ -32,7 +32,7 @@ const fetchRandomPokemon = async (): Promise<PokemonInfo> => {
 };
 
 // Fetch a random encounter on sinnoh-route-218
-const fetchRandomEncounter = async (): Promise<PokemonInfo> => {
+const fetchRandomEncounter = async (): Promise<Pokemon> => {
   const locationArea = await P.getLocationAreaByName(168);
 
   let pokemon;
@@ -48,21 +48,7 @@ const fetchRandomEncounter = async (): Promise<PokemonInfo> => {
     pokemon.sprites.other.showdown.back_default === null
   );
 
-  return {
-    name: pokemon.name,
-    species: {
-      name: pokemon.species.name,
-      url: pokemon.species.url,
-    },
-    cry: pokemon.cries.latest,
-    types: pokemon.types,
-    id: pokemon.id,
-    sprites: {
-      front: pokemon.sprites.other.showdown.front_default,
-      back: pokemon.sprites.other.showdown.back_default,
-    },
-    stats: pokemon.stats,
-  };
+  return pokemon;
 };
 
-export { fetchRandomPokemon, fetchRandomEncounter };
+export { fetchRandomPokemon, fetchRandomEncounter, P };

@@ -2,13 +2,19 @@ import { Button } from "@mantine/core";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import PokemonCard from "../components/PokemonCard";
 import usePokemonStore from "../store/usePokemonStore";
+import { PokemonInfo } from "../types";
+import { useState } from "react";
+import axios from "axios";
+import { Pokemon } from "pokeapi-js-wrapper";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
 });
 
 function Index() {
-  const { selectedPokemon, setSelectedPokemon } = usePokemonStore();
+  const [selectedPokemon, setSelectedPokemon] = useState<PokemonInfo | null>(
+    null,
+  );
   const pokemons = Route.useLoaderData();
   const navigate = useNavigate();
 
@@ -31,7 +37,11 @@ function Index() {
         ))}
       </div>
       <Button
-        onClick={() => {
+        onClick={async () => {
+          const { data: pokemon } = await axios.get<Pokemon>(
+            `http://localhost:3000/pokemon/${selectedPokemon!.name}`,
+          );
+          usePokemonStore.setState({ playerPokemon: pokemon });
           navigate({ to: "/search", replace: true });
         }}
         variant="light"

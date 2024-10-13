@@ -1,4 +1,4 @@
-import tailwindPresetMantine from 'tailwind-preset-mantine'
+import pluginMantine from "@devoss/tailwind-plugin-mantine";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -9,9 +9,6 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
-  presets: [
-    tailwindPresetMantine
-  ],
+  plugins: [pluginMantine()],
 }
 

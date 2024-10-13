@@ -1,14 +1,18 @@
 import { create } from "zustand";
-import { PokemonInfo } from "../types";
+import { Pokemon } from "pokeapi-js-wrapper";
 
 type PokemonStore = {
-  selectedPokemon: PokemonInfo | null;
-  setSelectedPokemon: (pokemon: PokemonInfo) => void;
+  playerPokemon: Pokemon | null;
+  opponentPokemon: Pokemon | null;
+  setPlayerPokemon: (pokemon: Pokemon) => void;
+  setOpponentPokemon: (pokemon: Pokemon) => void;
 };
 
 const usePokemonStore = create<PokemonStore>((set) => ({
-  selectedPokemon: null,
-  setSelectedPokemon: (pokemon) => set({ selectedPokemon: pokemon }),
+  playerPokemon: null,
+  opponentPokemon: null,
+  setPlayerPokemon: (pokemon) => set({ playerPokemon: pokemon }),
+  setOpponentPokemon: (enemyPokemon) => set({ opponentPokemon: enemyPokemon }),
 }));
 
 export default usePokemonStore;

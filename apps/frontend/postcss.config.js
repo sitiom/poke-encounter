@@ -11,7 +11,6 @@ export default {
       },
     },
     autoprefixer: {},
-    'tailwindcss/nesting': {},
     tailwindcss: {},
   },
 }

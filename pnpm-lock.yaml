@@ -81,16 +81,19 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-use-audio-player:
+        specifier: ^2.2.0
+        version: 2.2.0(react@18.3.1)
       tailwind-merge:
         specifier: ^2.5.3
         version: 2.5.3
-      use-sound:
-        specifier: ^4.0.3
-        version: 4.0.3(react@18.3.1)
       zustand:
         specifier: 5.0.0-rc.2
         version: 5.0.0-rc.2(@types/react@18.3.11)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
     devDependencies:
+      '@devoss/tailwind-plugin-mantine':
+        specifier: ^2.1.0
+        version: 2.1.0(@mantine/core@7.13.2(@mantine/hooks@7.13.2(react@18.3.1))(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.13)
       '@eslint/js':
         specifier: ^9.11.1
         version: 9.12.0
@@ -255,6 +258,12 @@ packages:
   '@babel/types@7.25.8':
     resolution: {integrity: sha512-JWtuCu8VQsMladxVz/P4HzHUGCAwpuqacmowgXFs5XjxIgKuNjnLokQzuVjlTvIzODaDmpjT3oxcC48vyk9EWg==}
     engines: {node: '>=6.9.0'}
+
+  '@devoss/tailwind-plugin-mantine@2.1.0':
+    resolution: {integrity: sha512-d2/RuRzZ+pBhCbV46A4WL7C8JzXdiJv8Z1Zp7RGzPzNMk+ay1fwpKW/5W8qXXYQoLmiK6LvIFMjOzeK2ALrpGA==}
+    peerDependencies:
+      '@mantine/core': '*'
+      tailwindcss: '*'
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -1991,6 +2000,11 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
 
+  react-use-audio-player@2.2.0:
+    resolution: {integrity: sha512-IMM+WiZAq1KUvTwq0sAdRdjEzyG4jzz1tK/JtC/+LLt3z/uJk3AFRLL3pgbOgS/2SnfVzFKCxR7pnBsu6nUFvg==}
+    peerDependencies:
+      react: '>=16.8'
+
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
@@ -2318,11 +2332,6 @@ packages:
       '@types/react':
         optional: true
 
-  use-sound@4.0.3:
-    resolution: {integrity: sha512-L205pEUFIrLsGYsCUKHQVCt0ajs//YQOFbEQeNwaWaqQj3y3st4SuR+rvpMHLmv8hgTcfUFlvMQawZNI3OE18w==}
-    peerDependencies:
-      react: '>=16.8'
-
   use-sync-external-store@1.2.2:
     resolution: {integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==}
     peerDependencies:
@@ -2559,6 +2568,11 @@ snapshots:
       '@babel/helper-string-parser': 7.25.7
       '@babel/helper-validator-identifier': 7.25.7
       to-fast-properties: 2.0.0
+
+  '@devoss/tailwind-plugin-mantine@2.1.0(@mantine/core@7.13.2(@mantine/hooks@7.13.2(react@18.3.1))(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.13)':
+    dependencies:
+      '@mantine/core': 7.13.2(@mantine/hooks@7.13.2(react@18.3.1))(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      tailwindcss: 3.4.13
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -4183,6 +4197,11 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  react-use-audio-player@2.2.0(react@18.3.1):
+    dependencies:
+      howler: 2.2.4
+      react: 18.3.1
+
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
@@ -4524,11 +4543,6 @@ snapshots:
       tslib: 2.7.0
     optionalDependencies:
       '@types/react': 18.3.11
-
-  use-sound@4.0.3(react@18.3.1):
-    dependencies:
-      howler: 2.2.4
-      react: 18.3.1
 
   use-sync-external-store@1.2.2(react@18.3.1):
     dependencies:

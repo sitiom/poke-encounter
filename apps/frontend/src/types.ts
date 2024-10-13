@@ -1,6 +1,6 @@
 import type { PokemonType, StatElement } from "pokeapi-js-wrapper";
 
-export interface PokemonInfo {
+interface PokemonInfo {
   name: string;
   id: number;
   types: PokemonType[];
@@ -15,3 +15,29 @@ export interface PokemonInfo {
     back: string;
   };
 }
+
+interface PokemonStats {
+  hp: number;
+  attack: number;
+  defense: number;
+  special_attack: number;
+  special_defense: number;
+  speed: number;
+}
+
+interface Move {
+  name: string;
+  power: number;
+  type: string;
+  damage_class: string;
+}
+
+interface PokemonBattleInfo {
+  name: string;
+  cry: string;
+  stats: PokemonStats;
+  types: string[];
+  moves: Move[];
+}
+
+export type { PokemonInfo, PokemonStats, Move, PokemonBattleInfo };

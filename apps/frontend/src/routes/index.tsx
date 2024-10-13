@@ -15,7 +15,6 @@ export const Route = createFileRoute("/")({
             },
           },
         );
-        console.log(data);
         return data;
       },
     }),

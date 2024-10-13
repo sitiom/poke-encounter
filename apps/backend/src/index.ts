@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import type { Request } from "express";
-import { fetchRandomEncounter, fetchRandomPokemon } from "./pokemon.js";
+import { fetchRandomEncounter, fetchRandomPokemon, P } from "./pokemon.js";
 
 const app = express();
 
@@ -40,6 +40,12 @@ app.get("/pokemon/random-encounter", async (req, res) => {
     return;
   }
   res.json({ message: "No pokemon encountered" });
+});
+
+app.get("/pokemon/:name", async (req, res) => {
+  const name = req.params.name;
+  const pokemon = await P.getPokemonByName(name);
+  res.json(pokemon);
 });
 
 app.listen(3000, () => {
