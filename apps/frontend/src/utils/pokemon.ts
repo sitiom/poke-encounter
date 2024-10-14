@@ -1,5 +1,6 @@
 import { Pokedex, Pokemon } from "pokeapi-js-wrapper";
 import { Move, PokemonBattleInfo, PokemonStats } from "../types";
+import { isAxiosError } from "axios";
 
 const P = new Pokedex();
 
@@ -18,13 +19,22 @@ const extractPokemonData = async (
   };
 
   const cry = data.cries.latest as string;
-  console.log(cry);
 
   const types = data.types.map((t) => t.type.name);
 
-  // Get moves with power
   const movesPromises = data.moves.map(async (moveEntry) => {
-    const moveData = await P.getMoveByName(moveEntry.move.name);
+    let moveData;
+    do {
+      try {
+        moveData = await P.getMoveByName(moveEntry.move.name);
+      } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 404) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          continue;
+        }
+        throw error;
+      }
+    } while (!moveData);
     // Find english name
     const englishName = moveData.names.find(
       (name) => name.language.name === "en",
@@ -208,16 +218,16 @@ const calculateDamage = (
   level: number,
   attacker: PokemonBattleInfo,
   defender: PokemonBattleInfo,
-  move: Move,
+  move: Move | undefined,
 ) => {
-  // Workaround for status moves
-  if (
-    move.damage_class === undefined ||
-    move.damage_class === "status" ||
-    move.power === null
-  ) {
-    move.damage_class = "physical";
-    move.power = 10;
+  // Default move if no move is provided
+  if (move === undefined) {
+    move = {
+      name: "Tackle",
+      power: 40,
+      type: "normal",
+      damage_class: "physical",
+    };
   }
   // Determine attack and defense stats based on move damage class
   const attackStat =

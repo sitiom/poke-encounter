@@ -1,13 +1,18 @@
 import { Card, Button } from "@mantine/core";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import {
+  createLazyFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import usePokemonStore from "../store/usePokemonStore";
 import { Move, calculateDamage } from "../utils/pokemon";
 import PokemonInfo from "../components/PokemonInfo";
 import { notifications } from "@mantine/notifications";
-import { useAudioPlayer } from "react-use-audio-player";
+import { useAudioPlayer, useGlobalAudioPlayer } from "react-use-audio-player";
 import { SegmentedControl } from "@mantine/core";
 import battlebg from "../assets/battle-bg.png";
+import victory from "../assets/victory.ogg";
 import hit from "../assets/hit.ogg";
 import hitNotEffective from "../assets/hit-not-effective.ogg";
 import hitSuperEffective from "../assets/hit-super-effective.ogg";
@@ -26,6 +31,14 @@ function Battle() {
   const [battleOver, setBattleOver] = useState(false);
   const [selectedMove, setSelectedMove] = useState<Move>(player.moves[0]);
   const [attacking, setAttacking] = useState(false);
+  const [previousCry, setPreviousCry] = useState<string>(opponent.cry);
+  const navigate = useNavigate();
+  const router = useRouter();
+
+  useEffect(() => {
+    setPlayerHP(player.stats.hp);
+    setOpponentHP(opponent.stats.hp);
+  }, [player, opponent]);
 
   const titlecasedName = player.name
     .split("-")
@@ -33,12 +46,16 @@ function Battle() {
     .join(" ");
 
   const { load } = useAudioPlayer();
+  const { load: loadGlobal, stop: stopGlobal } = useGlobalAudioPlayer();
 
   useEffect(() => {
-    load(opponent.cry, {
-      autoplay: true,
-    });
-  }, []);
+    if (previousCry !== opponent.cry) {
+      load(opponent.cry, {
+        autoplay: true,
+      });
+      setPreviousCry(opponent.cry);
+    }
+  }, [opponent.cry]);
 
   const performAttack = async () => {
     setAttacking(true);
@@ -73,6 +90,12 @@ function Battle() {
     );
     setPlayerAnimating(true);
 
+    if (newOpponentHP <= 0) {
+      load(opponent.cry, {
+        autoplay: true,
+      });
+    }
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (newOpponentHP <= 0) {
@@ -82,6 +105,14 @@ function Battle() {
         message: "You win!",
       });
       setBattleOver(true);
+      loadGlobal(victory, {
+        autoplay: true,
+        loop: true,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      stopGlobal();
+      usePokemonStore.setState({ opponentPokemon: null });
+      navigate({ to: "/search" });
       return;
     }
 
@@ -120,6 +151,12 @@ function Battle() {
     );
     setOpponentAnimating(true);
 
+    if (newPlayerHP <= 0) {
+      load(player.cry, {
+        autoplay: true,
+      });
+    }
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (newPlayerHP <= 0) {
@@ -128,8 +165,12 @@ function Battle() {
         title: "Defeat!",
         message: "You lose!",
       });
-
       setBattleOver(true);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      stopGlobal();
+      usePokemonStore.setState({ playerPokemon: null, opponentPokemon: null });
+      router.invalidate();
+      navigate({ to: "/" });
     }
 
     setAttacking(false);
@@ -154,7 +195,7 @@ function Battle() {
           <img
             src={battlebg}
             alt="battlebg"
-            className="w-full rounded-md border-2 border-neutral-600"
+            className="w-full rounded-md border-2 border-neutral-600 transition-opacity"
           />
           <img
             src={
@@ -164,7 +205,9 @@ function Battle() {
             alt={player.name}
             className={twMerge(
               playerAnimating && "animate-tackle-right",
-              "absolute bottom-[16%] left-[23%] w-[13%]",
+              opponentAnimating && "animate-damaged",
+              "absolute bottom-[16%] left-[23%] w-[13%] transition-opacity",
+              playerHP === 0 && "opacity-0",
             )}
             onAnimationEnd={() => setPlayerAnimating(false)}
           />
@@ -176,7 +219,9 @@ function Battle() {
             alt={opponent.name}
             className={twMerge(
               opponentAnimating && "animate-tackle-left",
-              "absolute right-[26%] top-[25%] w-[13%]",
+              playerAnimating && "animate-damaged",
+              "absolute right-[26%] top-[25%] w-[13%] transition-opacity",
+              opponentHP === 0 && "opacity-0",
             )}
             onAnimationEnd={() => setOpponentAnimating(false)}
           />

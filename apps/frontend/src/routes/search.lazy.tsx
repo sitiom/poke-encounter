@@ -1,4 +1,8 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createLazyFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import grassWalking from "../assets/grass-walking.gif";
 import routeImage from "../assets/route-218.jpg";
 import { Card, Group, Badge, Button, Text } from "@mantine/core";
@@ -19,6 +23,7 @@ function Search() {
   const { playerPokemon, opponentPokemon } = usePokemonStore();
   const navigate = useNavigate();
   const { load } = useGlobalAudioPlayer();
+  const router = useRouter();
 
   return (
     <Card
@@ -26,7 +31,7 @@ function Search() {
       padding="lg"
       radius="md"
       withBorder
-      className="w-80 mx-auto"
+      className="mx-auto w-80"
     >
       <Card.Section>
         <img src={loading ? grassWalking : routeImage} alt="grass-walking" />
@@ -85,6 +90,7 @@ function Search() {
           usePokemonStore.setState({ opponentPokemon: enemyPokemon });
           setLoading(false);
           load(encounterMusic, { autoplay: true, loop: true });
+          router.invalidate();
           navigate({ to: "/battle", replace: true });
         }}
         disabled={playerPokemon === null || opponentPokemon !== null}

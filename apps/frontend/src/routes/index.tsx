@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
   pendingComponent: () => (
     <div className="flex flex-col items-center justify-center">
       <img src="/pikachu-loading.gif" alt="loading" className="w-96" />
-      <p className="font-semibold text-3xl">Loading...</p>
+      <p className="text-3xl font-semibold">Loading...</p>
     </div>
   ),
 });

@@ -6,6 +6,7 @@ import { PokemonInfo } from "../types";
 import { useState } from "react";
 import axios from "axios";
 import { Pokemon } from "pokeapi-js-wrapper";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -15,7 +16,22 @@ function Index() {
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonInfo | null>(
     null,
   );
-  const pokemons = Route.useLoaderData();
+  const { data: pokemons } = useSuspenseQuery<PokemonInfo[]>({
+    queryKey: ["random", 3],
+    queryFn: async () => {
+      const { data } = await axios.get<PokemonInfo[]>(
+        "http://localhost:3000/pokemon/random",
+        {
+          params: {
+            limit: 3,
+          },
+        },
+      );
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
   const navigate = useNavigate();
 
   if (!Array.isArray(pokemons)) {

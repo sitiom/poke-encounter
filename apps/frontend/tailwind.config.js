@@ -25,10 +25,19 @@ export default {
             transform: "translateX(50px)"
           }
         },
+        damaged: {
+          "0%, 100%": {
+            filter: "brightness(1)"
+          },
+          "50%": {
+            filter: "grayscale(100%) brightness(50%) sepia(100%) hue-rotate(0deg) saturate(300%)"
+          }
+        },
       },
       animation: {
         "tackle-left": "tackle-left 0.3s ease-in-out",
-        "tackle-right": "tackle-right 0.3s ease-in-out"
+        "tackle-right": "tackle-right 0.3s ease-in-out",
+        damaged: "damaged 0.3s ease-in-out"
       }
     },
   },
