@@ -218,17 +218,8 @@ const calculateDamage = (
   level: number,
   attacker: PokemonBattleInfo,
   defender: PokemonBattleInfo,
-  move: Move | undefined,
+  move: Move,
 ) => {
-  // Default move if no move is provided
-  if (move === undefined) {
-    move = {
-      name: "Tackle",
-      power: 40,
-      type: "normal",
-      damage_class: "physical",
-    };
-  }
   // Determine attack and defense stats based on move damage class
   const attackStat =
     move.damage_class === "physical"

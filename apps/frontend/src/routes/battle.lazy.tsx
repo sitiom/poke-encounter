@@ -1,9 +1,5 @@
 import { Card, Button } from "@mantine/core";
-import {
-  createLazyFileRoute,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import usePokemonStore from "../store/usePokemonStore";
 import { Move, calculateDamage } from "../utils/pokemon";
@@ -31,9 +27,9 @@ function Battle() {
   const [battleOver, setBattleOver] = useState(false);
   const [selectedMove, setSelectedMove] = useState<Move>(player.moves[0]);
   const [attacking, setAttacking] = useState(false);
-  const [previousCry, setPreviousCry] = useState<string>(opponent.cry);
+  const [catching, setCatching] = useState(false);
+  const [caught, setCaught] = useState(false);
   const navigate = useNavigate();
-  const router = useRouter();
 
   useEffect(() => {
     setPlayerHP(player.stats.hp);
@@ -49,21 +45,12 @@ function Battle() {
   const { load: loadGlobal, stop: stopGlobal } = useGlobalAudioPlayer();
 
   useEffect(() => {
-    if (previousCry !== opponent.cry) {
-      load(opponent.cry, {
-        autoplay: true,
-      });
-      setPreviousCry(opponent.cry);
-    }
+    load(opponent.cry, {
+      autoplay: true,
+    });
   }, [opponent.cry]);
 
-  const performAttack = async () => {
-    setAttacking(true);
-
-    // Both Pokémon are level 1
-    const level = 1;
-
-    // Player's turn
+  const playerAttack = async (level: number) => {
     const playerDamage = calculateDamage(level, player, opponent, selectedMove);
 
     let newOpponentHP = Math.max(opponentHP - playerDamage.damage, 0);
@@ -115,10 +102,20 @@ function Battle() {
       navigate({ to: "/search" });
       return;
     }
+  };
 
-    // Opponent's turn
-    const opponentMove =
+  const opponentAttack = async (level: number) => {
+    let opponentMove =
       opponent.moves[Math.floor(Math.random() * opponent.moves.length)];
+    // Default move if no move is found
+    if (opponentMove === undefined) {
+      opponentMove = {
+        name: "Tackle",
+        power: 40,
+        type: "normal",
+        damage_class: "physical",
+      };
+    }
     const opponentDamage = calculateDamage(
       level,
       opponent,
@@ -169,9 +166,18 @@ function Battle() {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       stopGlobal();
       usePokemonStore.setState({ playerPokemon: null, opponentPokemon: null });
-      router.invalidate();
       navigate({ to: "/" });
     }
+  };
+
+  const performAttack = async () => {
+    setAttacking(true);
+
+    // Both Pokémon are level 1
+    const level = 1;
+
+    await playerAttack(level);
+    await opponentAttack(level);
 
     setAttacking(false);
   };
@@ -179,6 +185,46 @@ function Battle() {
   const handleMoveSelection = (moveName: string) => {
     const move = player.moves.find((m) => m.name === moveName)!;
     setSelectedMove(move);
+  };
+
+  const performCapture = async () => {
+    setCatching(true);
+    const catchRate = 100 - 50 * (opponentHP / opponent.stats.hp);
+    const random = Math.random() * 100;
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    if (random < catchRate) {
+      setCatching(false);
+      setCaught(true);
+      notifications.show({
+        color: "green",
+        title: "Success!",
+        message: `You captured ${opponent.name}!`,
+      });
+      load(opponent.cry, {
+        autoplay: true,
+      });
+      loadGlobal(victory, {
+        autoplay: true,
+        loop: true,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      setCaught(false);
+      stopGlobal();
+      usePokemonStore.setState({ opponentPokemon: null });
+      navigate({ to: "/search" });
+      return;
+    }
+
+    notifications.show({
+      color: "red",
+      title: "Failure!",
+      message: `You failed to capture ${opponent.name}!`,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setCatching(false);
+    await opponentAttack(1);
   };
 
   return (
@@ -221,7 +267,7 @@ function Battle() {
               opponentAnimating && "animate-tackle-left",
               playerAnimating && "animate-damaged",
               "absolute right-[26%] top-[25%] w-[13%] transition-opacity",
-              opponentHP === 0 && "opacity-0",
+              (opponentHP === 0 || caught) && "opacity-0",
             )}
             onAnimationEnd={() => setOpponentAnimating(false)}
           />
@@ -241,26 +287,38 @@ function Battle() {
           />
         </div>
       </div>
-      <div className="flex justify-center">
-        <div>
-          <h3 className="mb-2 text-md">What will {titlecasedName} do?</h3>
-          <div className="flex items-center gap-2">
-            <SegmentedControl
-              value={selectedMove.name}
-              size="md"
-              onChange={(value) => {
-                handleMoveSelection(value);
-              }}
-              data={player.moves.map((move) => move.name)}
-            />
-            <Button
-              onClick={performAttack}
-              disabled={battleOver || !selectedMove || attacking}
-              loading={attacking && !battleOver}
-            >
-              Go!
-            </Button>
-          </div>
+      <div className="mx-auto">
+        <h3 className="mb-2 text-center text-md">
+          What will {titlecasedName} do?
+        </h3>
+        <div className="flex items-center gap-2">
+          <SegmentedControl
+            value={selectedMove.name}
+            size="md"
+            onChange={(value) => {
+              handleMoveSelection(value);
+            }}
+            data={player.moves.map((move) => move.name)}
+          />
+          <Button
+            onClick={performAttack}
+            disabled={
+              battleOver || !selectedMove || attacking || catching || caught
+            }
+            loading={attacking && !battleOver}
+          >
+            Go!
+          </Button>
+          <p>or</p>
+          <Button
+            onClick={performCapture}
+            disabled={
+              battleOver || !selectedMove || attacking || catching || caught
+            }
+            loading={catching && !battleOver}
+          >
+            Catch pokemon
+          </Button>
         </div>
       </div>
     </Card>
