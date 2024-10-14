@@ -2,7 +2,7 @@ import { Card, Button } from "@mantine/core";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import usePokemonStore from "../store/usePokemonStore";
-import { Move, calculateDamage } from "../utils/pokemon";
+import { Move, calculateDamage, extractPokemonData } from "../utils/pokemon";
 import PokemonInfo from "../components/PokemonInfo";
 import { notifications } from "@mantine/notifications";
 import { useAudioPlayer, useGlobalAudioPlayer } from "react-use-audio-player";
@@ -13,13 +13,26 @@ import hit from "../assets/hit.ogg";
 import hitNotEffective from "../assets/hit-not-effective.ogg";
 import hitSuperEffective from "../assets/hit-super-effective.ogg";
 import { twMerge } from "tailwind-merge";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createLazyFileRoute("/battle")({
   component: Battle,
 });
 
 function Battle() {
-  const { player, opponent } = Route.useLoaderData();
+  const { data: player } = useSuspenseQuery({
+    queryKey: ["player", usePokemonStore.getState().playerPokemon!],
+    queryFn: async () => {
+      return extractPokemonData(usePokemonStore.getState().playerPokemon!);
+    },
+  });
+
+  const { data: opponent } = useSuspenseQuery({
+    queryKey: ["opponent", usePokemonStore.getState().opponentPokemon!],
+    queryFn: async () => {
+      return extractPokemonData(usePokemonStore.getState().opponentPokemon!);
+    },
+  });
   const [playerHP, setPlayerHP] = useState<number>(player.stats.hp);
   const [opponentHP, setOpponentHP] = useState<number>(opponent.stats.hp);
   const [playerAnimating, setPlayerAnimating] = useState(false);
@@ -48,7 +61,7 @@ function Battle() {
     load(opponent.cry, {
       autoplay: true,
     });
-  }, [opponent.cry]);
+  }, []);
 
   const playerAttack = async (level: number) => {
     const playerDamage = calculateDamage(level, player, opponent, selectedMove);
@@ -100,7 +113,6 @@ function Battle() {
       stopGlobal();
       usePokemonStore.setState({ opponentPokemon: null });
       navigate({ to: "/search" });
-      return;
     }
   };
 
@@ -177,7 +189,10 @@ function Battle() {
     const level = 1;
 
     await playerAttack(level);
-    await opponentAttack(level);
+    console.log(battleOver);
+    if (!battleOver) {
+      await opponentAttack(level);
+    }
 
     setAttacking(false);
   };

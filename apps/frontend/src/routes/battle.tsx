@@ -13,23 +13,25 @@ export const Route = createFileRoute("/battle")({
       });
     }
   },
-  loader: async () => {
-    const player = extractPokemonData(
-      usePokemonStore.getState().playerPokemon!,
-    );
-    const opponent = extractPokemonData(
-      usePokemonStore.getState().opponentPokemon!,
-    );
-
-    const result = await Promise.all([player, opponent]);
-
-    return { player: result[0], opponent: result[1] };
+  loader: async ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData({
+      queryKey: ["player", usePokemonStore.getState().playerPokemon!],
+      queryFn: async () => {
+        return extractPokemonData(usePokemonStore.getState().playerPokemon!);
+      },
+    });
+    queryClient.ensureQueryData({
+      queryKey: ["opponent", usePokemonStore.getState().opponentPokemon!],
+      queryFn: async () => {
+        return extractPokemonData(usePokemonStore.getState().opponentPokemon!);
+      },
+    });
   },
   pendingComponent: () => {
     return (
       <div className="flex flex-col items-center justify-center">
         <img src="/pikachu-loading.gif" alt="loading" className="w-96" />
-        <p className="font-semibold text-3xl">Loading...</p>
+        <p className="text-3xl font-semibold">Loading...</p>
       </div>
     );
   },
