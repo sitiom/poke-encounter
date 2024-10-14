@@ -6,6 +6,7 @@ import { Move, calculateDamage } from "../utils/pokemon";
 import PokemonInfo from "../components/PokemonInfo";
 import { notifications } from "@mantine/notifications";
 import { useAudioPlayer } from "react-use-audio-player";
+import { SegmentedControl } from "@mantine/core";
 import battlebg from "../assets/battle-bg.png";
 
 export const Route = createLazyFileRoute("/battle")({
@@ -18,6 +19,11 @@ function Battle() {
   const [opponentHP, setOpponentHP] = useState<number>(opponent.stats.hp);
   const [battleOver, setBattleOver] = useState<boolean>(false);
   const [selectedMove, setSelectedMove] = useState<Move>(player.moves[0]);
+
+  const titlecasedName = player.name
+    .split("-")
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
 
   const { load } = useAudioPlayer();
 
@@ -150,8 +156,15 @@ function Battle() {
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <div>
           <div>
-            <h3>Select Move:</h3>
-            {player.moves.map((move) => (
+            <h3>What will {titlecasedName} do?</h3>
+            <SegmentedControl
+              value={selectedMove.name}
+              onChange={(value) => {
+                handleMoveSelection(value);
+              }}
+              data={player.moves.map((move) => move.name)}
+            />
+            {/* {player.moves.map((move) => (
               <button
                 key={move.name}
                 onClick={() => {
@@ -165,7 +178,7 @@ function Battle() {
               >
                 {move.name} ({move.type}, Power: {move.power})
               </button>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>
