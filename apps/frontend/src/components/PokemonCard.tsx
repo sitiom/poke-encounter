@@ -7,7 +7,8 @@ import { Table } from "@mantine/core";
 
 interface PokemonCardProps {
   pokemon: PokemonInfo;
-  onClick: (pokemon: PokemonInfo) => void;
+  caughtAt?: Date;
+  onClick?: (pokemon: PokemonInfo) => void;
   selected?: boolean;
 }
 
@@ -32,7 +33,12 @@ const typeColors: Record<string, string> = {
   fairy: "#D685AD",
 };
 
-function PokemonCard({ pokemon, onClick, selected = false }: PokemonCardProps) {
+function PokemonCard({
+  pokemon,
+  onClick,
+  caughtAt,
+  selected = false,
+}: PokemonCardProps) {
   const titlecasedName = pokemon.name
     .split("-")
     .map((word) => word[0].toUpperCase() + word.slice(1))
@@ -59,20 +65,23 @@ function PokemonCard({ pokemon, onClick, selected = false }: PokemonCardProps) {
       radius="md"
       withBorder
       className={twMerge(
-        "w-80 h-[28rem] justify-center transition-colors",
+        caughtAt ? "h-[30rem]" : "h-[28rem]",
+        "w-80 justify-center transition-colors",
         selected && "border-2 border-primary",
       )}
       onClick={() => {
-        onClick(pokemon);
+        if (onClick) {
+          onClick(pokemon);
+        }
       }}
     >
       <Image
         src={pokemon.sprites.front}
         alt="Sprite"
-        className="aspect-square object-contain h-48"
+        className="aspect-square h-48 object-contain"
       />
 
-      <div className="mt-9 mb-5">
+      <div className="mb-5 mt-9">
         <Text fw={500}>
           <span className="font-extrabold">{pokedexNumber}</span>{" "}
           {titlecasedName}
@@ -106,6 +115,14 @@ function PokemonCard({ pokemon, onClick, selected = false }: PokemonCardProps) {
               {pokemon.stats[2].base_stat}
             </Table.Td>
           </Table.Tr>
+          {caughtAt && (
+            <Table.Tr>
+              <Table.Th>Caught at</Table.Th>
+              <Table.Td className="text-right">
+                {caughtAt.toLocaleTimeString()}
+              </Table.Td>
+            </Table.Tr>
+          )}
         </Table.Tbody>
       </Table>
     </Card>

@@ -1,6 +1,7 @@
 import type { PokemonType, StatElement } from "pokeapi-js-wrapper";
 
 interface PokemonInfo {
+  _id: string;
   name: string;
   id: number;
   types: PokemonType[];
@@ -41,9 +42,10 @@ interface PokemonBattleInfo {
 }
 
 interface CaughtPokemonInfo {
+  _id?: string;
   name: string;
   id: number;
-  caughtAt: Date;
+  caughtAt: Date | string;
 }
 
 export type {

@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as CaughtPokemonsImport } from './routes/caught-pokemons'
 import { Route as BattleImport } from './routes/battle'
 import { Route as IndexImport } from './routes/index'
 
@@ -26,6 +27,11 @@ const SearchLazyRoute = SearchLazyImport.update({
   path: '/search',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/search.lazy').then((d) => d.Route))
+
+const CaughtPokemonsRoute = CaughtPokemonsImport.update({
+  path: '/caught-pokemons',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const BattleRoute = BattleImport.update({
   path: '/battle',
@@ -55,6 +61,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BattleImport
       parentRoute: typeof rootRoute
     }
+    '/caught-pokemons': {
+      id: '/caught-pokemons'
+      path: '/caught-pokemons'
+      fullPath: '/caught-pokemons'
+      preLoaderRoute: typeof CaughtPokemonsImport
+      parentRoute: typeof rootRoute
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -70,12 +83,14 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/battle': typeof BattleRoute
+  '/caught-pokemons': typeof CaughtPokemonsRoute
   '/search': typeof SearchLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/battle': typeof BattleRoute
+  '/caught-pokemons': typeof CaughtPokemonsRoute
   '/search': typeof SearchLazyRoute
 }
 
@@ -83,27 +98,30 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/battle': typeof BattleRoute
+  '/caught-pokemons': typeof CaughtPokemonsRoute
   '/search': typeof SearchLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/battle' | '/search'
+  fullPaths: '/' | '/battle' | '/caught-pokemons' | '/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/battle' | '/search'
-  id: '__root__' | '/' | '/battle' | '/search'
+  to: '/' | '/battle' | '/caught-pokemons' | '/search'
+  id: '__root__' | '/' | '/battle' | '/caught-pokemons' | '/search'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BattleRoute: typeof BattleRoute
+  CaughtPokemonsRoute: typeof CaughtPokemonsRoute
   SearchLazyRoute: typeof SearchLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BattleRoute: BattleRoute,
+  CaughtPokemonsRoute: CaughtPokemonsRoute,
   SearchLazyRoute: SearchLazyRoute,
 }
 
@@ -121,6 +139,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/battle",
+        "/caught-pokemons",
         "/search"
       ]
     },
@@ -129,6 +148,9 @@ export const routeTree = rootRoute
     },
     "/battle": {
       "filePath": "battle.tsx"
+    },
+    "/caught-pokemons": {
+      "filePath": "caught-pokemons.tsx"
     },
     "/search": {
       "filePath": "search.lazy.tsx"
