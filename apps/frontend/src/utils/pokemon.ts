@@ -210,6 +210,15 @@ const calculateDamage = (
   defender: PokemonBattleInfo,
   move: Move,
 ) => {
+  // Workaround for status moves
+  if (
+    move.damage_class === undefined ||
+    move.damage_class === "status" ||
+    move.power === null
+  ) {
+    move.damage_class = "physical";
+    move.power = 10;
+  }
   // Determine attack and defense stats based on move damage class
   const attackStat =
     move.damage_class === "physical"

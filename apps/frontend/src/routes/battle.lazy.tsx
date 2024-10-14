@@ -1,4 +1,4 @@
-import { Card } from "@mantine/core";
+import { Card, Button } from "@mantine/core";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import usePokemonStore from "../store/usePokemonStore";
@@ -8,6 +8,10 @@ import { notifications } from "@mantine/notifications";
 import { useAudioPlayer } from "react-use-audio-player";
 import { SegmentedControl } from "@mantine/core";
 import battlebg from "../assets/battle-bg.png";
+import hit from "../assets/hit.ogg";
+import hitNotEffective from "../assets/hit-not-effective.ogg";
+import hitSuperEffective from "../assets/hit-super-effective.ogg";
+import { twMerge } from "tailwind-merge";
 
 export const Route = createLazyFileRoute("/battle")({
   component: Battle,
@@ -17,8 +21,11 @@ function Battle() {
   const { player, opponent } = Route.useLoaderData();
   const [playerHP, setPlayerHP] = useState<number>(player.stats.hp);
   const [opponentHP, setOpponentHP] = useState<number>(opponent.stats.hp);
-  const [battleOver, setBattleOver] = useState<boolean>(false);
+  const [playerAnimating, setPlayerAnimating] = useState(false);
+  const [opponentAnimating, setOpponentAnimating] = useState(false);
+  const [battleOver, setBattleOver] = useState(false);
   const [selectedMove, setSelectedMove] = useState<Move>(player.moves[0]);
+  const [attacking, setAttacking] = useState(false);
 
   const titlecasedName = player.name
     .split("-")
@@ -34,7 +41,7 @@ function Battle() {
   }, []);
 
   const performAttack = async () => {
-    if (battleOver || !selectedMove) return;
+    setAttacking(true);
 
     // Both Pokémon are level 1
     const level = 1;
@@ -54,6 +61,19 @@ function Battle() {
             : ""
       }`,
     });
+    load(
+      playerDamage.typeEffectiveness > 1
+        ? hitSuperEffective
+        : playerDamage.typeEffectiveness < 1
+          ? hitNotEffective
+          : hit,
+      {
+        autoplay: true,
+      },
+    );
+    setPlayerAnimating(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (newOpponentHP <= 0) {
       notifications.show({
@@ -88,6 +108,19 @@ function Battle() {
             : ""
       }`,
     });
+    load(
+      opponentDamage.typeEffectiveness > 1
+        ? hitSuperEffective
+        : opponentDamage.typeEffectiveness < 1
+          ? hitNotEffective
+          : hit,
+      {
+        autoplay: true,
+      },
+    );
+    setOpponentAnimating(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (newPlayerHP <= 0) {
       notifications.show({
@@ -98,6 +131,8 @@ function Battle() {
 
       setBattleOver(true);
     }
+
+    setAttacking(false);
   };
 
   const handleMoveSelection = (moveName: string) => {
@@ -110,7 +145,7 @@ function Battle() {
       shadow="xs"
       withBorder
       p="lg"
-      className="max-w-[63.75rem] mx-auto"
+      className="mx-auto my-6 max-w-[63.75rem]"
       radius="md"
       color=""
     >
@@ -127,7 +162,11 @@ function Battle() {
                 .back_default!
             }
             alt={player.name}
-            className="absolute left-[23%] bottom-[16%] w-[13%]"
+            className={twMerge(
+              playerAnimating && "animate-tackle-right",
+              "absolute bottom-[16%] left-[23%] w-[13%]",
+            )}
+            onAnimationEnd={() => setPlayerAnimating(false)}
           />
           <img
             src={
@@ -135,56 +174,50 @@ function Battle() {
                 .front_default!
             }
             alt={opponent.name}
-            className="absolute right-[26%] top-[25%] w-[13%]"
+            className={twMerge(
+              opponentAnimating && "animate-tackle-left",
+              "absolute right-[26%] top-[25%] w-[13%]",
+            )}
+            onAnimationEnd={() => setOpponentAnimating(false)}
           />
         </div>
-        <div className="flex gap-2 justify-center my-2">
+        <div className="my-2 flex justify-center gap-2">
           <PokemonInfo
             name={player.name}
             hp={playerHP}
             totalHp={player.stats.hp}
-            className="md:absolute md:right-[15%] md:bottom-[15%]"
+            className="md:absolute md:bottom-[15%] md:right-[15%]"
           />
           <PokemonInfo
             name={opponent.name}
             hp={opponentHP}
             totalHp={opponent.stats.hp}
-            className="md:absolute md:top-[15%] md:left-[15%]"
+            className="md:absolute md:left-[15%] md:top-[15%]"
           />
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
+      <div className="flex justify-center">
         <div>
-          <div>
-            <h3>What will {titlecasedName} do?</h3>
+          <h3 className="mb-2 text-md">What will {titlecasedName} do?</h3>
+          <div className="flex items-center gap-2">
             <SegmentedControl
               value={selectedMove.name}
+              size="md"
               onChange={(value) => {
                 handleMoveSelection(value);
               }}
               data={player.moves.map((move) => move.name)}
             />
-            {/* {player.moves.map((move) => (
-              <button
-                key={move.name}
-                onClick={() => {
-                  handleMoveSelection(move.name);
-                }}
-                disabled={battleOver}
-                style={{
-                  backgroundColor:
-                    selectedMove?.name === move.name ? "lightblue" : "",
-                }}
-              >
-                {move.name} ({move.type}, Power: {move.power})
-              </button>
-            ))} */}
+            <Button
+              onClick={performAttack}
+              disabled={battleOver || !selectedMove || attacking}
+              loading={attacking && !battleOver}
+            >
+              Go!
+            </Button>
           </div>
         </div>
       </div>
-      <button onClick={performAttack} disabled={battleOver || !selectedMove}>
-        Attack
-      </button>
     </Card>
   );
 }

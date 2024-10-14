@@ -46,7 +46,8 @@ const fetchRandomEncounter = async (): Promise<Pokemon> => {
     );
   } while (
     pokemon.sprites.other.showdown.front_default === null ||
-    pokemon.sprites.other.showdown.back_default === null
+    pokemon.sprites.other.showdown.back_default === null ||
+    pokemon.moves.length === 0
   );
 
   return pokemon;

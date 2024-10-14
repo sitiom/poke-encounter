@@ -46,7 +46,7 @@ function Index() {
         }}
         variant="light"
         size="lg"
-        className="mt-10 mx-auto transition-colors"
+        className="mx-auto mt-10 transition-colors"
         radius="xl"
         disabled={!selectedPokemon}
       >
