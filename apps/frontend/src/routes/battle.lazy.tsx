@@ -2,7 +2,12 @@ import { Card, Button } from "@mantine/core";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import usePokemonStore from "../store/usePokemonStore";
-import { Move, calculateDamage, extractPokemonData } from "../utils/pokemon";
+import {
+  Move,
+  calculateDamage,
+  extractPokemonData,
+  saveCaughtPokemon,
+} from "../utils/pokemon";
 import PokemonInfo from "../components/PokemonInfo";
 import { notifications } from "@mantine/notifications";
 import { useAudioPlayer, useGlobalAudioPlayer } from "react-use-audio-player";
@@ -13,7 +18,12 @@ import hit from "../assets/hit.ogg";
 import hitNotEffective from "../assets/hit-not-effective.ogg";
 import hitSuperEffective from "../assets/hit-super-effective.ogg";
 import { twMerge } from "tailwind-merge";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { Pokemon } from "pokeapi-js-wrapper";
 
 export const Route = createLazyFileRoute("/battle")({
   component: Battle,
@@ -43,6 +53,20 @@ function Battle() {
   const [catching, setCatching] = useState(false);
   const [caught, setCaught] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const saveMutation = useMutation({
+    mutationFn: async (pokemon: Pokemon) => {
+      const { data } = await saveCaughtPokemon({
+        name: pokemon.name,
+        id: pokemon.id,
+        caughtAt: new Date(),
+      });
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["caughtPokemon"], (old: any) => [...old, data]);
+    },
+  });
 
   useEffect(() => {
     setPlayerHP(player.stats.hp);
@@ -212,6 +236,10 @@ function Battle() {
     if (random < catchRate) {
       setCatching(false);
       setCaught(true);
+
+      const opponentPokemon = usePokemonStore.getState().opponentPokemon!;
+      saveMutation.mutate(opponentPokemon);
+
       notifications.show({
         color: "green",
         title: "Success!",

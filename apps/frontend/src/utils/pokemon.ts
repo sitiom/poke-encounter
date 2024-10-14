@@ -1,6 +1,12 @@
 import { Pokedex, Pokemon } from "pokeapi-js-wrapper";
-import { Move, PokemonBattleInfo, PokemonStats } from "../types";
+import {
+  CaughtPokemonInfo,
+  Move,
+  PokemonBattleInfo,
+  PokemonStats,
+} from "../types";
 import { isAxiosError } from "axios";
+import axios from "axios";
 
 const P = new Pokedex();
 
@@ -248,5 +254,25 @@ const calculateDamage = (
   return { damage: Math.floor(damage * modifier), typeEffectiveness };
 };
 
-export { extractPokemonData, getTypeEffectiveness, calculateDamage };
+const saveCaughtPokemon = async (pokemon: CaughtPokemonInfo) => {
+  // POST http://localhost:3000/caught-pokemon
+  // Body: { name: pokemon.name, id: pokemon.id, caughtAt: new Date() }
+  const response = await axios.post<CaughtPokemonInfo>(
+    "http://localhost:3000/caught-pokemon",
+    {
+      name: pokemon.name,
+      id: pokemon.id,
+      caughtAt: new Date(),
+    },
+  );
+
+  return response;
+};
+
+export {
+  extractPokemonData,
+  getTypeEffectiveness,
+  calculateDamage,
+  saveCaughtPokemon,
+};
 export type { PokemonBattleInfo, Move };

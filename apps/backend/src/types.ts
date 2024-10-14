@@ -1,6 +1,12 @@
 import type { PokemonType, StatElement } from "pokedex-promise-v2";
 
-export interface PokemonInfo {
+interface CaughtPokemonInfo {
+  name: string;
+  id: number;
+  caughtAt: Date;
+}
+
+interface PokemonInfo {
   name: string;
   id: number;
   types: PokemonType[];
@@ -15,3 +21,5 @@ export interface PokemonInfo {
     back: string;
   };
 }
+
+export type { CaughtPokemonInfo, PokemonInfo };

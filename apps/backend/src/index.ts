@@ -1,7 +1,23 @@
 import express from "express";
 import cors from "cors";
-import type { Request } from "express";
+import type { Request, Response } from "express";
+import mongoose from "mongoose";
 import { fetchRandomEncounter, fetchRandomPokemon, P } from "./pokemon.js";
+import { CaughtPokemon } from "./schema.js";
+import "dotenv/config";
+import type { CaughtPokemonInfo } from "./types.js";
+
+if (!process.env.MONGO_URI) {
+  throw new Error("MONGO_URI is not defined");
+}
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
 
 const app = express();
 
@@ -48,6 +64,23 @@ app.get("/pokemon/:name", async (req, res) => {
 
   res.json(pokemon);
 });
+
+app.get("/caught-pokemon", async (_req, res: Response<CaughtPokemonInfo[]>) => {
+  const caughtPokemons = await CaughtPokemon.find();
+  res.json(caughtPokemons);
+});
+
+app.post(
+  "/caught-pokemon",
+  async (
+    req: Request<{}, {}, CaughtPokemonInfo>,
+    res: Response<CaughtPokemonInfo>,
+  ) => {
+    const caughtPokemon = new CaughtPokemon(req.body);
+    await caughtPokemon.save();
+    res.json(caughtPokemon);
+  },
+);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

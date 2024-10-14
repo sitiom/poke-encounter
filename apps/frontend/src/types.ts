@@ -40,4 +40,16 @@ interface PokemonBattleInfo {
   moves: Move[];
 }
 
-export type { PokemonInfo, PokemonStats, Move, PokemonBattleInfo };
+interface CaughtPokemonInfo {
+  name: string;
+  id: number;
+  caughtAt: Date;
+}
+
+export type {
+  PokemonInfo,
+  PokemonStats,
+  Move,
+  PokemonBattleInfo,
+  CaughtPokemonInfo,
+};
