@@ -12,12 +12,22 @@ import { QueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CaughtPokemonInfo } from "../types";
 import { Anchor } from "@mantine/core";
+import { useGlobalAudioPlayer } from "react-use-audio-player";
+import { useEffect } from "react";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     component: () => {
       const [parent] = useAutoAnimate();
       const router = useRouterState();
+      const player = useGlobalAudioPlayer();
+
+      useEffect(() => {
+        if (router.location.href !== "/battle") {
+          player.stop();
+        }
+      }, [router.location.href]);
+
       const { data: caughtPokemon } = useSuspenseQuery<CaughtPokemonInfo[]>({
         queryKey: ["caughtPokemon"],
         queryFn: async () => {

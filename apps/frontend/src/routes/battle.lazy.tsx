@@ -79,7 +79,7 @@ function Battle() {
     .join(" ");
 
   const { load } = useAudioPlayer();
-  const { load: loadGlobal, stop: stopGlobal } = useGlobalAudioPlayer();
+  const { load: loadGlobal } = useGlobalAudioPlayer();
 
   useEffect(() => {
     load(opponent.cry, {
@@ -134,7 +134,6 @@ function Battle() {
         loop: true,
       });
       await new Promise((resolve) => setTimeout(resolve, 5000));
-      stopGlobal();
       usePokemonStore.setState({ opponentPokemon: null });
       navigate({ to: "/search" });
     }
@@ -200,7 +199,6 @@ function Battle() {
       });
       setBattleOver(true);
       await new Promise((resolve) => setTimeout(resolve, 5000));
-      stopGlobal();
       usePokemonStore.setState({ playerPokemon: null, opponentPokemon: null });
       navigate({ to: "/" });
     }
@@ -254,7 +252,6 @@ function Battle() {
       });
       await new Promise((resolve) => setTimeout(resolve, 5000));
       setCaught(false);
-      stopGlobal();
       usePokemonStore.setState({ opponentPokemon: null });
       navigate({ to: "/search" });
       return;

@@ -9,6 +9,7 @@ import { isAxiosError } from "axios";
 import axios from "axios";
 
 const P = new Pokedex();
+const tackle = await P.getMoveByName("tackle");
 
 const extractPokemonData = async (
   data: Pokemon,
@@ -30,17 +31,23 @@ const extractPokemonData = async (
 
   const movesPromises = data.moves.map(async (moveEntry) => {
     let moveData;
+    let retries = 0;
     do {
       try {
         moveData = await P.getMoveByName(moveEntry.move.name);
       } catch (error) {
         if (isAxiosError(error) && error.response?.status === 404) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
+          retries++;
           continue;
         }
         throw error;
       }
-    } while (!moveData);
+    } while (!moveData && retries < 3);
+
+    if (!moveData) {
+      moveData = tackle;
+    }
     // Find english name
     const englishName = moveData.names.find(
       (name) => name.language.name === "en",
