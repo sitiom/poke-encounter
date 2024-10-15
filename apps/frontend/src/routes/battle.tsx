@@ -13,6 +13,11 @@ export const Route = createFileRoute("/battle")({
       });
     }
   },
+  onLeave: () => {
+    usePokemonStore.setState({
+      opponentPokemon: null,
+    });
+  },
   loader: async ({ context: { queryClient } }) => {
     queryClient.ensureQueryData({
       queryKey: ["player", usePokemonStore.getState().playerPokemon!],
