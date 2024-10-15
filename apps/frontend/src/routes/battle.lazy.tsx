@@ -331,34 +331,37 @@ function Battle() {
         <h3 className="mb-2 text-center text-md">
           What will {titlecasedName} do?
         </h3>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center gap-4 md:flex-row md:gap-2">
           <SegmentedControl
             value={selectedMove.name}
             size="md"
+            className="flex flex-wrap"
             onChange={(value) => {
               handleMoveSelection(value);
             }}
             data={player.moves.map((move) => move.name)}
           />
-          <Button
-            onClick={performAttack}
-            disabled={
-              battleOver || !selectedMove || attacking || catching || caught
-            }
-            loading={attacking && !battleOver}
-          >
-            Go!
-          </Button>
-          <p>or</p>
-          <Button
-            onClick={performCapture}
-            disabled={
-              battleOver || !selectedMove || attacking || catching || caught
-            }
-            loading={catching && !battleOver}
-          >
-            Catch pokemon
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={performAttack}
+              disabled={
+                battleOver || !selectedMove || attacking || catching || caught
+              }
+              loading={attacking && !battleOver}
+            >
+              Go!
+            </Button>
+            <p>or</p>
+            <Button
+              onClick={performCapture}
+              disabled={
+                battleOver || !selectedMove || attacking || catching || caught
+              }
+              loading={catching && !battleOver}
+            >
+              Catch pokemon
+            </Button>
+          </div>
         </div>
       </div>
     </Card>

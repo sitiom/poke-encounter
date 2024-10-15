@@ -14,6 +14,7 @@ import { CaughtPokemonInfo } from "../types";
 import { Anchor } from "@mantine/core";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
 import { useEffect } from "react";
+import { twMerge } from "tailwind-merge";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -40,6 +41,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
       return (
         <>
+          <img
+            src="/battle-bg-animated.gif"
+            alt="battle-bg"
+            className={twMerge(
+              "pointer-events-none fixed inset-0 z-[-1] h-full w-full object-cover object-center transition-opacity",
+              router.location.href === "/" ? "opacity-50" : "opacity-10",
+            )}
+          />
           <Link to="/">
             <header className="mt-8 flex flex-col items-center">
               <img src={logo} alt="logo" className="w-52" />
@@ -47,16 +56,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             </header>
           </Link>
           <div className="mb-8 flex justify-center">
-            {router.location.href !== "/battle" &&
-            router.location.href !== "/caught-pokemons" ? (
-              <Link to="/caught-pokemons">
-                <Anchor className="mx-auto text-lg">
-                  Caught: {caughtPokemon.length}
-                </Anchor>
-              </Link>
-            ) : (
-              <div className="text-lg">Caught: {caughtPokemon.length}</div>
-            )}
+            {caughtPokemon.length !== 0 &&
+              (router.location.href !== "/battle" &&
+              router.location.href !== "/" ? (
+                <Link to="/">
+                  <Anchor className="mx-auto text-lg">
+                    Caught: {caughtPokemon.length}
+                  </Anchor>
+                </Link>
+              ) : (
+                <div className="text-lg">Caught: {caughtPokemon.length}</div>
+              ))}
           </div>
           <div className="container mx-auto px-8" ref={parent}>
             <Outlet />
