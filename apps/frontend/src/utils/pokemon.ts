@@ -69,6 +69,7 @@ const extractPokemonData = async (
 
   const moves = allMoves
     .filter((move): move is Move => move !== null)
+    .sort(() => 0.5 - Math.random())
     .slice(0, 4);
 
   return {
