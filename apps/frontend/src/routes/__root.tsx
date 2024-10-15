@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           <Link to="/">
             <header className="mt-8 flex flex-col items-center">
               <img src={logo} alt="logo" className="w-52" />
-              <div className="text-xl font-semibold">Battle Simulator</div>
+              <h1 className="text-xl font-semibold">Battle Simulator</h1>
             </header>
           </Link>
           <div className="mb-8 flex justify-center">
