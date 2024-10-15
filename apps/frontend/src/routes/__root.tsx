@@ -15,6 +15,8 @@ import { Anchor } from "@mantine/core";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
 import { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
+import route234 from "../assets/route-234.ogg";
+import newGame from "../assets/new-game.ogg";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -24,10 +26,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       const player = useGlobalAudioPlayer();
 
       useEffect(() => {
-        if (router.location.href !== "/battle") {
-          player.stop();
+        console.log(router.location.href);
+        console.log(player.src);
+        if (router.location.href === "/" && player.src !== newGame) {
+          player.load(newGame, {
+            autoplay: true,
+            loop: true,
+          });
+          player.play();
+        } else if (
+          (router.location.href === "/start" ||
+            router.location.href === "/search") &&
+          player.src !== route234
+        ) {
+          player.load(route234, {
+            autoplay: true,
+            loop: true,
+          });
+          player.play();
         }
-      }, [router.location.href]);
+      }, [router.location.href, player.src]);
 
       const { data: caughtPokemon } = useSuspenseQuery<CaughtPokemonInfo[]>({
         queryKey: ["caughtPokemon"],
