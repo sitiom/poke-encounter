@@ -32,10 +32,9 @@ function CaughtPokemons() {
   });
 
   const results = useQueries({
-    queries: caughtPokemon!.map((pokemon) => ({
+    queries: caughtPokemon.map((pokemon) => ({
       queryKey: ["pokemon", pokemon._id],
       queryFn: async (): Promise<PokemonInfo> => {
-        console.log("Hello");
         const { data } = await axios.get<Pokemon>(
           `http://localhost:3000/pokemon/${pokemon.name}`,
         );
@@ -60,16 +59,19 @@ function CaughtPokemons() {
   });
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="mt-10 grid grid-cols-3 gap-10">
-        {results.map(({ data, isLoading }) => {
-          // let caughtAt = caughtPokemon!.find(
-          //   (pokemon) => pokemon._id === data!._id,
-          // )!.caughtAt;
-          // if (typeof caughtAt === "string") {
-          //   caughtAt = new Date(caughtAt);
-          // }
-          return isLoading ? null : <PokemonCard pokemon={data!} />;
+    <div className="mb-10 flex flex-col items-center">
+      <div className="grid grid-cols-3 gap-10">
+        {results.map(({ data, isLoading, isSuccess }) => {
+          let caughtAt = isSuccess
+            ? caughtPokemon.find((pokemon) => pokemon._id === data._id)!
+                .caughtAt
+            : undefined;
+          if (typeof caughtAt === "string") {
+            caughtAt = new Date(caughtAt);
+          }
+          return isLoading ? null : (
+            <PokemonCard key={data!._id} pokemon={data!} caughtAt={caughtAt} />
+          );
         })}
       </div>
     </div>

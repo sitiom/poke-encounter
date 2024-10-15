@@ -45,6 +45,16 @@ function PokemonCard({
     .join(" ");
   const pokedexNumber = "#" + pokemon.id.toString().padStart(3, "0");
 
+  const caughtAtFormatted = caughtAt?.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  });
+
   const { load, playing, stop } = useAudioPlayer();
 
   useEffect(() => {
@@ -117,10 +127,8 @@ function PokemonCard({
           </Table.Tr>
           {caughtAt && (
             <Table.Tr>
-              <Table.Th>Caught at</Table.Th>
-              <Table.Td className="text-right">
-                {caughtAt.toLocaleTimeString()}
-              </Table.Td>
+              <Table.Th>Caught</Table.Th>
+              <Table.Td className="text-right">{caughtAtFormatted}</Table.Td>
             </Table.Tr>
           )}
         </Table.Tbody>
