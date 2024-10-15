@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import type { Request, Response } from "express";
 import mongoose from "mongoose";
-import { fetchRandomEncounter, fetchRandomPokemon, P } from "./pokemon.js";
-import { CaughtPokemon } from "./schema.js";
+import { fetchRandomEncounter, fetchRandomPokemon, P } from "./pokemon";
+import { CaughtPokemon } from "./schema";
 import "dotenv/config";
-import type { CaughtPokemonInfo } from "./types.js";
+import type { CaughtPokemonInfo } from "./types";
 
 if (!process.env.MONGO_URI) {
   throw new Error("MONGO_URI is not defined");
@@ -51,7 +51,7 @@ app.get(
 // Endpoint to fetch a random encounter on sinnoh-route-218
 // https://pokeapi.co/api/v2/location-area/168/
 app.get("/pokemon/random-encounter", async (_req, res) => {
-  if (Math.random() < 1) {
+  if (Math.random() < 0.45) {
     res.json(await fetchRandomEncounter());
     return;
   }

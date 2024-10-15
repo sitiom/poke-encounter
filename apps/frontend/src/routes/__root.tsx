@@ -7,16 +7,25 @@ import {
 import logo from "../assets/logo.png";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { QueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CaughtPokemonInfo } from "../types";
 import { Anchor } from "@mantine/core";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import route234 from "../assets/route-234.ogg";
 import newGame from "../assets/new-game.ogg";
+import React from "react";
+
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === "production"
+    ? () => null
+    : React.lazy(() =>
+        import("@tanstack/router-devtools").then((res) => ({
+          default: res.TanStackRouterDevtools,
+        })),
+      );
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -89,7 +98,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           <div className="container mx-auto px-8" ref={parent}>
             <Outlet />
           </div>
-          <TanStackRouterDevtools />
+          <Suspense>
+            <TanStackRouterDevtools />
+          </Suspense>
           <ReactQueryDevtools />
         </>
       );

@@ -1,5 +1,5 @@
 import Pokedex, { type Pokemon } from "pokedex-promise-v2";
-import type { PokemonInfo } from "./types.js";
+import type { PokemonInfo } from "./types";
 
 const P = new Pokedex();
 const pokemonsList = await P.getPokemonsList();

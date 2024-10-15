@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import type { CaughtPokemonInfo } from "./types.js";
+import type { CaughtPokemonInfo } from "./types";
 
 const caughtPokemonSchema = new Schema<CaughtPokemonInfo>({
   name: { type: String, required: true },

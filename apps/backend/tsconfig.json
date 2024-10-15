@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
+    "target": "ESNext",
+    "module": "ESNext",
 
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Bundler",
     "verbatimModuleSyntax": true,
     "noEmit": true,
 
-    "rootDir": "src",
     "outDir": "dist",
 
     "esModuleInterop": true,
