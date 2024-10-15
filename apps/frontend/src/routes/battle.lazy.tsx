@@ -17,6 +17,7 @@ import victory from "../assets/victory.ogg";
 import hit from "../assets/hit.ogg";
 import hitNotEffective from "../assets/hit-not-effective.ogg";
 import hitSuperEffective from "../assets/hit-super-effective.ogg";
+import pokeballStruggling from "../assets/pokeball-struggling.gif";
 import { twMerge } from "tailwind-merge";
 import {
   useMutation,
@@ -299,14 +300,17 @@ function Battle() {
           />
           <img
             src={
-              usePokemonStore.getState().opponentPokemon!.sprites.other.showdown
-                .front_default!
+              catching || caught
+                ? pokeballStruggling
+                : usePokemonStore.getState().opponentPokemon!.sprites.other
+                    .showdown.front_default!
             }
             alt={opponent.name}
             className={twMerge(
               opponentAnimating && "animate-tackle-left",
               playerAnimating && "animate-damaged",
               "absolute right-[26%] top-[25%] w-[13%] transition-opacity",
+              (catching || caught) && "right-[32%] top-[45%] w-[4%]",
               (opponentHP === 0 || caught) && "opacity-0",
             )}
             onAnimationEnd={() => setOpponentAnimating(false)}
@@ -331,7 +335,7 @@ function Battle() {
         <h3 className="mb-2 text-center text-md">
           What will {titlecasedName} do?
         </h3>
-        <div className="flex flex-col items-center gap-4 md:flex-row md:gap-2">
+        <div className="flex flex-col items-center gap-4 filter md:flex-row md:gap-2">
           <SegmentedControl
             value={selectedMove.name}
             size="md"
