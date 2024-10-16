@@ -40,9 +40,7 @@ function Index() {
 
   return (
     <div className="flex flex-col items-center pb-10">
-      <h2 className="mb-5 text-xl font-semibold">
-        Select your starter pokemon
-      </h2>
+      <h2 className="mb-5 text-xl font-semibold">Select your pokemon</h2>
       <div className="flex flex-wrap justify-center gap-10">
         {pokemons.map((pokemon) => (
           <PokemonCard
