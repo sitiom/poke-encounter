@@ -2,7 +2,7 @@ import { Card, Badge, Image, Text } from "@mantine/core";
 import { PokemonInfo } from "../types";
 import { twMerge } from "tailwind-merge";
 import { useAudioPlayer } from "react-use-audio-player";
-import { useEffect } from "react";
+import { forwardRef, useEffect } from "react";
 import { Table } from "@mantine/core";
 
 interface PokemonCardProps {
@@ -33,108 +33,106 @@ const typeColors: Record<string, string> = {
   fairy: "#D685AD",
 };
 
-function PokemonCard({
-  pokemon,
-  onClick,
-  caughtAt,
-  selected = false,
-}: PokemonCardProps) {
-  const titlecasedName = pokemon.name
-    .split("-")
-    .map((word) => word[0].toUpperCase() + word.slice(1))
-    .join(" ");
-  const pokedexNumber = "#" + pokemon.id.toString().padStart(3, "0");
+const PokemonCard = forwardRef<HTMLDivElement, PokemonCardProps>(
+  function PokemonCard({ pokemon, onClick, caughtAt, selected = false }, ref) {
+    const titlecasedName = pokemon.name
+      .split("-")
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(" ");
+    const pokedexNumber = "#" + pokemon.id.toString().padStart(3, "0");
 
-  const caughtAtFormatted = caughtAt?.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: true,
-  });
+    const caughtAtFormatted = caughtAt?.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    });
 
-  const { load, playing, stop } = useAudioPlayer();
+    const { load, playing, stop } = useAudioPlayer();
 
-  useEffect(() => {
-    if (selected) {
-      load(pokemon.cry, { autoplay: true });
-      return;
-    }
+    useEffect(() => {
+      if (selected) {
+        load(pokemon.cry, { autoplay: true });
+        return;
+      }
 
-    if (playing) {
-      stop();
-    }
-  }, [selected]);
+      if (playing) {
+        stop();
+      }
+    }, [selected]);
 
-  return (
-    <Card
-      shadow="sm"
-      padding="lg"
-      radius="md"
-      withBorder
-      className={twMerge(
-        caughtAt ? "h-[30rem]" : "h-[28rem]",
-        "w-80 justify-center transition-colors",
-        selected && "border-2 border-primary",
-      )}
-      onClick={() => {
-        if (onClick) {
-          onClick(pokemon);
-        }
-      }}
-    >
-      <Image
-        src={pokemon.sprites.front}
-        alt="Sprite"
-        className="aspect-square h-48 object-contain"
-      />
+    return (
+      <Card
+        shadow="sm"
+        padding="lg"
+        radius="md"
+        withBorder
+        className={twMerge(
+          caughtAt ? "h-[30rem]" : "h-[28rem]",
+          "w-80 justify-center transition-colors",
+          selected && "border-2 border-primary",
+        )}
+        onClick={() => {
+          if (onClick) {
+            onClick(pokemon);
+          }
+        }}
+        ref={ref}
+      >
+        <Image
+          src={pokemon.sprites.front}
+          alt="Sprite"
+          className="aspect-square h-48 object-contain"
+        />
 
-      <div className="mb-5 mt-9">
-        <Text fw={500}>
-          <span className="font-extrabold">{pokedexNumber}</span>{" "}
-          {titlecasedName}
-        </Text>
-        <div className="space-x-2">
-          {pokemon.types.map((type) => (
-            <Badge key={type.type.name} color={typeColors[type.type.name]}>
-              {type.type.name}
-            </Badge>
-          ))}
+        <div className="mb-5 mt-9">
+          <Text fw={500}>
+            <span className="font-extrabold">{pokedexNumber}</span>{" "}
+            {titlecasedName}
+          </Text>
+          <div className="space-x-2">
+            {pokemon.types.map((type) => (
+              <Badge key={type.type.name} color={typeColors[type.type.name]}>
+                {type.type.name}
+              </Badge>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <Table horizontalSpacing="md">
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Th>HP</Table.Th>
-            <Table.Td className="text-right">
-              {pokemon.stats[0].base_stat}
-            </Table.Td>
-          </Table.Tr>
-          <Table.Tr>
-            <Table.Th>Attack</Table.Th>
-            <Table.Td className="text-right">
-              {pokemon.stats[1].base_stat}
-            </Table.Td>
-          </Table.Tr>
-          <Table.Tr>
-            <Table.Th>Defense</Table.Th>
-            <Table.Td className="text-right">
-              {pokemon.stats[2].base_stat}
-            </Table.Td>
-          </Table.Tr>
-          {caughtAt && (
+        <Table horizontalSpacing="md">
+          <Table.Tbody>
             <Table.Tr>
-              <Table.Th>Caught</Table.Th>
-              <Table.Td className="text-right">{caughtAtFormatted}</Table.Td>
+              <Table.Th>HP</Table.Th>
+              <Table.Td className="text-right">
+                {pokemon.stats[0].base_stat}
+              </Table.Td>
             </Table.Tr>
-          )}
-        </Table.Tbody>
-      </Table>
-    </Card>
-  );
-}
+            <Table.Tr>
+              <Table.Th>Attack</Table.Th>
+              <Table.Td className="text-right">
+                {pokemon.stats[1].base_stat}
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Defense</Table.Th>
+              <Table.Td className="text-right">
+                {pokemon.stats[2].base_stat}
+              </Table.Td>
+            </Table.Tr>
+            {caughtAt && (
+              <Table.Tr>
+                <Table.Th>Caught</Table.Th>
+                <Table.Td className="text-right">{caughtAtFormatted}</Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </Card>
+    );
+  },
+);
 
 export default PokemonCard;

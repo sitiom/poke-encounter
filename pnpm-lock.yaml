@@ -54,6 +54,9 @@ importers:
 
   apps/frontend:
     dependencies:
+      '@dnd-kit/react':
+        specifier: ^0.0.5
+        version: 0.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@formkit/auto-animate':
         specifier: ^0.8.2
         version: 0.8.2
@@ -285,6 +288,27 @@ packages:
     peerDependencies:
       '@mantine/core': '*'
       tailwindcss: '*'
+
+  '@dnd-kit/abstract@0.0.5':
+    resolution: {integrity: sha512-1ANNxFkYqXgfUHrCZsjwrDbiCYJkneW738KnB7AIakq/Bg5f4C3M63UUzTmkX7Vbbngl9Cvnmw7/N8Nwp0dUlQ==}
+
+  '@dnd-kit/collision@0.0.5':
+    resolution: {integrity: sha512-rh9JwZiGnaq5hCR1Z1X4eWsA/wQiSDaYJnwnzvkidlwQBLJMwIKK1cs3FGjYSWTCDrtQvt1mzb1fow4w/MM4EA==}
+
+  '@dnd-kit/dom@0.0.5':
+    resolution: {integrity: sha512-0QyyOrxokMtuMPJh/qmTyINrEU0TmYbOLprw55wD6t1ftfZZQCpQE42etM25UlfrIGpy9zT4qcNh/yGPP+ebmA==}
+
+  '@dnd-kit/geometry@0.0.5':
+    resolution: {integrity: sha512-aBKYXSTIDW55iMd9jDrLSaikoebGZyn80sGalPxwjGgFr2FyiNCBkSy7lePZ/lrRfNTy1vMEqixFkt0EH6593g==}
+
+  '@dnd-kit/react@0.0.5':
+    resolution: {integrity: sha512-hpTmh3gEoMyhiXoUH+mqHPMETflfL5uwhD2V+rOYMpoRdCQLYovy5r251TY+avieb8d8J7YuIB1k8Hxoy9UJXA==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+
+  '@dnd-kit/state@0.0.5':
+    resolution: {integrity: sha512-w+GE/FUhIAoJUuPBR8yWvpdT+85R0xJyWE6ImaNTGQlplCeraxkiLAvYFI46uD8ZcE9nRXl3zIyk7gFlC0tzrQ==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -707,6 +731,9 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@preact/signals-core@1.8.0':
+    resolution: {integrity: sha512-OBvUsRZqNmjzCZXWLxkZfhcgT+Fk8DDcT/8vD6a1xhDemodyy87UJRJfASMuSD8FaAIeGgGm85ydXhm7lr4fyA==}
 
   '@rollup/plugin-virtual@3.0.2':
     resolution: {integrity: sha512-10monEYsBp3scM4/ND4LNH5Rxvh3e/cVeL3jWTgZ2SrQ+BmUoQcopVQvnaMcOnykb1VkxUFuDAN+0FnpTFRy2A==}
@@ -2916,6 +2943,45 @@ snapshots:
       '@mantine/core': 7.13.2(@mantine/hooks@7.13.2(react@18.3.1))(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwindcss: 3.4.14
 
+  '@dnd-kit/abstract@0.0.5':
+    dependencies:
+      '@dnd-kit/geometry': 0.0.5
+      '@dnd-kit/state': 0.0.5
+      tslib: 2.7.0
+
+  '@dnd-kit/collision@0.0.5':
+    dependencies:
+      '@dnd-kit/abstract': 0.0.5
+      '@dnd-kit/geometry': 0.0.5
+      tslib: 2.7.0
+
+  '@dnd-kit/dom@0.0.5':
+    dependencies:
+      '@dnd-kit/abstract': 0.0.5
+      '@dnd-kit/collision': 0.0.5
+      '@dnd-kit/geometry': 0.0.5
+      '@dnd-kit/state': 0.0.5
+      tslib: 2.7.0
+
+  '@dnd-kit/geometry@0.0.5':
+    dependencies:
+      '@dnd-kit/state': 0.0.5
+      tslib: 2.7.0
+
+  '@dnd-kit/react@0.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@dnd-kit/abstract': 0.0.5
+      '@dnd-kit/dom': 0.0.5
+      '@dnd-kit/state': 0.0.5
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tslib: 2.7.0
+
+  '@dnd-kit/state@0.0.5':
+    dependencies:
+      '@preact/signals-core': 1.8.0
+      tslib: 2.7.0
+
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
 
@@ -3209,6 +3275,8 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
+
+  '@preact/signals-core@1.8.0': {}
 
   '@rollup/plugin-virtual@3.0.2(rollup@4.24.0)':
     optionalDependencies:

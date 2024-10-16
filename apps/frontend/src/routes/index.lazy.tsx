@@ -5,6 +5,7 @@ import PokemonCard from "../components/PokemonCard";
 import { Button } from "@mantine/core";
 import { CaughtPokemonInfo, PokemonInfo } from "../types";
 import axios from "axios";
+import { useSortable } from "@dnd-kit/react/sortable";
 
 export const Route = createLazyFileRoute("/")({
   component: CaughtPokemons,
@@ -51,7 +52,7 @@ function CaughtPokemons() {
   return (
     <div className="mb-10 flex flex-col items-center">
       <div className="flex flex-wrap justify-center gap-10">
-        {results.map(({ data, isLoading, isSuccess }) => {
+        {results.map(({ data, isLoading, isSuccess }, index) => {
           let caughtAt = isSuccess
             ? caughtPokemon.find((pokemon) => pokemon._id === data._id)!
                 .caughtAt
@@ -60,7 +61,12 @@ function CaughtPokemons() {
             caughtAt = new Date(caughtAt);
           }
           return isLoading ? null : (
-            <PokemonCard key={data!._id} pokemon={data!} caughtAt={caughtAt} />
+            <SortablePokemonCard
+              key={data!._id}
+              pokemon={data!}
+              caughtAt={caughtAt!}
+              index={index}
+            />
           );
         })}
       </div>
@@ -77,3 +83,19 @@ function CaughtPokemons() {
     </div>
   );
 }
+
+interface SortablePokemonCardProps {
+  pokemon: PokemonInfo;
+  caughtAt: Date;
+  index: number;
+}
+
+const SortablePokemonCard = ({
+  pokemon,
+  caughtAt,
+  index,
+}: SortablePokemonCardProps) => {
+  const { ref } = useSortable({ id: pokemon._id, index });
+
+  return <PokemonCard ref={ref} pokemon={pokemon} caughtAt={caughtAt} />;
+};
