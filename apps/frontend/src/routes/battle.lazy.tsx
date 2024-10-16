@@ -335,7 +335,7 @@ function Battle() {
         <h3 className="mb-2 text-center text-md">
           What will {titlecasedName} do?
         </h3>
-        <div className="flex flex-col items-center gap-4 filter md:flex-row md:gap-2">
+        <div className="flex flex-col items-center gap-4 md:flex-row md:gap-2">
           <SegmentedControl
             value={selectedMove.name}
             size="md"
