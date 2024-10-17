@@ -88,7 +88,7 @@ function Battle() {
     });
   }, []);
 
-  const playerAttack = async (level: number) => {
+  const playerAttack = async (level: number): Promise<{ playerHP: number }> => {
     const playerDamage = calculateDamage(level, player, opponent, selectedMove);
 
     let newOpponentHP = Math.max(opponentHP - playerDamage.damage, 0);
@@ -202,6 +202,7 @@ function Battle() {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       usePokemonStore.setState({ playerPokemon: null, opponentPokemon: null });
       navigate({ to: "/" });
+      return { playerHP: newPlayerHP };
     }
   };
 
@@ -209,11 +210,10 @@ function Battle() {
     setAttacking(true);
 
     // Both Pokémon are level 1
-    const level = 1;
+    const level = 50;
 
-    await playerAttack(level);
-    console.log(battleOver);
-    if (!battleOver) {
+    const { playerHP } = await playerAttack(level);
+    if (playerHP > 0 || !battleOver) {
       await opponentAttack(level);
     }
 
